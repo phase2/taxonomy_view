@@ -1,0 +1,27 @@
+<?php
+
+function taxonomy_view_menu_alter(&$items) {
+  $items['taxonomy/term/%taxonomy_term'] = array(
+    'title' => 'Taxonomy term', 
+    'title callback' => 'taxonomy_term_title', 
+    'title arguments' => array(2), 
+    'page callback' => 'taxonomy_view_term_page', 
+    'page arguments' => array(2), 
+    'access arguments' => array('access content'), 
+    //'file' => 'taxonomy.pages.inc',
+  );
+  //print_r($items);
+
+
+}
+
+function taxonomy_view_term_page($term) {
+  global $language;
+  if (variable_get("taxonomy_view_{$term->vocabulary_machine_name}", FALSE)) {
+    return taxonomy_term_view($term, 'full', $language);
+  }
+  else {
+    module_load_include("inc","taxonomy", "taxonomy.pages");
+    return taxonomy_term_page($term);
+  }
+}
